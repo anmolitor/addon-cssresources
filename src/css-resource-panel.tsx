@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import { SyntaxHighlighter, Placeholder, Spaced, Icons } from '@storybook/components';
 import { STORY_RENDERED } from '@storybook/core-events';
-import { API } from '@storybook/api';
+import { API } from '@storybook/manager-api';
 import { styled } from '@storybook/theming';
 
 import { EVENTS, PARAM_KEY } from './constants';

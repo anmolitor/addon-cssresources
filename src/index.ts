@@ -1,28 +1,28 @@
-import { document } from 'global';
-import { addons, makeDecorator } from '@storybook/addons';
-import { EVENTS, PARAM_KEY } from './constants';
+import { document } from "global";
+import { addons, makeDecorator } from "@storybook/preview-api";
+import { EVENTS, PARAM_KEY } from "./constants";
 
 const changeMediaAttribute = (element: HTMLElement, enabled: boolean) => {
-  const current = element.getAttribute('media');
-  if ((enabled && !current) || (!enabled && current === 'max-width: 1px')) {
+  const current = element.getAttribute("media");
+  if ((enabled && !current) || (!enabled && current === "max-width: 1px")) {
     // don't do anything
-  } else if (enabled && current === 'max-width: 1px') {
+  } else if (enabled && current === "max-width: 1px") {
     // remove the attribute
-    element.removeAttribute('media');
+    element.removeAttribute("media");
   } else if (enabled) {
     // add the disable attribute
-    const value = current.replace(' and max-width: 1px', '');
-    element.setAttribute('media', value);
+    const value = current.replace(" and max-width: 1px", "");
+    element.setAttribute("media", value);
   } else {
     // modify the existing attribute so it disables
-    const value = current ? `${current} and max-width: 1px` : 'max-width: 1px';
-    element.setAttribute('media', value);
+    const value = current ? `${current} and max-width: 1px` : "max-width: 1px";
+    element.setAttribute("media", value);
   }
 };
 
 const createElement = (id: string, code: string): HTMLDivElement => {
-  const element: HTMLDivElement = document.createElement('div');
-  element.setAttribute('id', `storybook-addon-resource_${id}`);
+  const element: HTMLDivElement = document.createElement("div");
+  element.setAttribute("id", `storybook-addon-resource_${id}`);
   element.innerHTML = code;
   return element;
 };
@@ -35,8 +35,8 @@ const getElement = (id: string, code: string) => {
 const updateElement = (id: string, code: string, value: boolean) => {
   const { element, created } = getElement(id, code);
 
-  element.querySelectorAll('link').forEach((child) => changeMediaAttribute(child, value));
-  element.querySelectorAll('style').forEach((child) => changeMediaAttribute(child, value));
+  element.querySelectorAll("link").forEach((child) => changeMediaAttribute(child, value));
+  element.querySelectorAll("style").forEach((child) => changeMediaAttribute(child, value));
 
   if (created) {
     document.body.appendChild(element);
@@ -62,7 +62,7 @@ const setResources = (resources: { code: string; id: string }[]) => {
 };
 
 export const withCssResources = makeDecorator({
-  name: 'withCssResources',
+  name: "withCssResources",
   parameterName: PARAM_KEY,
   skipIfNoParametersOrOptions: true,
 
@@ -70,14 +70,22 @@ export const withCssResources = makeDecorator({
     const storyOptions = parameters || options;
     addons.getChannel().on(EVENTS.SET, setResources);
 
-    if (!Array.isArray(storyOptions) && !Array.isArray(storyOptions.cssresources)) {
-      throw new Error('The `cssresources` parameter needs to be an Array');
+    if (!Array.isArray(storyOptions) && !Array.isArray((storyOptions as any).cssresources)) {
+      throw new Error("The `cssresources` parameter needs to be an Array");
     }
 
     return getStory(context);
-  },
+  }
 });
 
 if (module && module.hot && module.hot.decline) {
   module.hot.decline();
+}
+
+declare global {
+  interface NodeModule {
+    hot?: {
+      decline?(): void;
+    };
+  }
 }
