@@ -1,4 +1,3 @@
-import { document } from "global";
 import { addons, makeDecorator } from "@storybook/preview-api";
 import { EVENTS, PARAM_KEY } from "./constants";
 
