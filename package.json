@@ -1,6 +1,6 @@
 {
   "name": "storybook-addon-cssresources",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "A storybook addon to switch between different css files",
   "keywords": [
     "storybook-addons",
